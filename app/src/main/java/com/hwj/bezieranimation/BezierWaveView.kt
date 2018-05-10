@@ -21,9 +21,9 @@ class BezierWaveView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) 
 
     private var mBaseY = 0f
     private var mCtrX0 = 0f//第一个贝塞尔曲线的控制点X坐标
-    private var mCtrY0 = 0f//第一个贝塞尔曲线的控制点Y坐标
+    private var mCtrY0 = 0//第一个贝塞尔曲线的控制点Y坐标
     private var mCtrX1 = 0f//第二个贝塞尔曲线的控制点X坐标
-    private var mCtrY1 = 0f//第二个贝塞尔曲线的控制点Y坐标
+    private var mCtrY1 = 0//第二个贝塞尔曲线的控制点Y坐标
     private var mCtrX2 = 0f//第三个贝塞尔曲线的控制点X坐标
 
     //第一个贝塞尔曲线起始点和终止点
@@ -60,6 +60,7 @@ class BezierWaveView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) 
         } else {
             mPaint.color = Color.YELLOW
         }
+        systemTypedArray.recycle()
         mPaint.style = if (mStroke) Paint.Style.STROKE else Paint.Style.FILL
 
         setBackgroundColor(Color.TRANSPARENT)
@@ -68,8 +69,8 @@ class BezierWaveView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         initCoordnate()
-        mCtrY1 = measuredHeight.toFloat()
-        mCtrY0 = 0F
+        mCtrY1 = measuredHeight
+        mCtrY0 = 0
     }
 
     private fun initCoordnate() {
@@ -86,12 +87,12 @@ class BezierWaveView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) 
         mCtrX2 = (-measuredWidth / 4).toFloat()
     }
 
+    private var mCount = 0
     override fun onDraw(canvas: Canvas?) {
         mPath.reset()
         //绘制第一个贝塞尔曲线
-        mPaint.color = Color.YELLOW
         mPath.moveTo(mStartX0, mBaseY)
-        mPath.quadTo(mCtrX0, mCtrY0, mEndX0, mBaseY)
+        mPath.quadTo(mCtrX0, mCtrY0.toFloat(), mEndX0, mBaseY)
         if (!mStroke) {
             mPath.lineTo(mEndX0, height.toFloat())
             mPath.lineTo(mStartX0, height.toFloat())
@@ -99,18 +100,16 @@ class BezierWaveView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) 
         }
 
         //绘制第二个贝塞尔曲线
-        mPaint.color = Color.RED
         mPath.moveTo(mStartX1, mBaseY)
-        mPath.quadTo(mCtrX1, mCtrY1, mStartX0, mBaseY)
+        mPath.quadTo(mCtrX1, mCtrY1.toFloat(), mStartX0, mBaseY)
         if (!mStroke) {
             mPath.lineTo(mStartX0, height.toFloat())
             mPath.lineTo(mStartX1, height.toFloat())
             mPath.close()
         }
         //绘制第三个贝塞尔曲线
-        mPaint.color = Color.BLUE
         mPath.moveTo(mStartX2, mBaseY)
-        mPath.quadTo(mCtrX2, mCtrY0, mStartX1, mBaseY)
+        mPath.quadTo(mCtrX2, mCtrY0.toFloat(), mStartX1, mBaseY)
         if (!mStroke) {
             mPath.lineTo(mStartX1, height.toFloat())
             mPath.lineTo(mStartX2, height.toFloat())
@@ -125,20 +124,13 @@ class BezierWaveView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) 
         mCtrX1 += mSpeed
         mStartX2 += mSpeed
         mCtrX2 += mSpeed
-        if (mStartX2 == 0f) {
-            initCoordnate()
-            mCtrY0 = if (mCtrY0 == 0f) {
-                height.toFloat()
-            } else {
-                0f
-            }
-            mCtrY1 = if (mCtrY1 == 0f) {
-                height.toFloat()
-            } else {
-                0f
-            }
 
+        if (mStartX2 >= 0f) {
+            initCoordnate()
+            mCtrY0 = mCtrY0 xor mCtrY1
+            mCtrY1 = mCtrY0 xor mCtrY1
+            mCtrY0 = mCtrY0 xor mCtrY1
         }
-        invalidate()
+        postInvalidateDelayed(18)
     }
 }

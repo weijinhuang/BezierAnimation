@@ -5,5 +5,12 @@
         <attr name="speed" format="dimension" />
         <attr name="stroke" format="boolean" />
         <attr name="line_width" format="dimension" />
+        <attr name="amplitude" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="WaveProgress">
+        <attr name="speed" format="dimension" />
+        <attr name="stroke" format="boolean" />
+        <attr name="line_width" format="dimension" />
+        <attr name="amplitude" format="dimension" />
     </declare-styleable>
 </resources>
