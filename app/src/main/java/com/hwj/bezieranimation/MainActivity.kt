@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun refresProgress() {
-        if (p == 100) {
+        if (p > 100) {
             return
         }
         waveProgress.setProgress(p++)

@@ -6,11 +6,13 @@
         <attr name="stroke" format="boolean" />
         <attr name="line_width" format="dimension" />
         <attr name="amplitude" format="dimension" />
+        <attr name="wave_color" format="color" />
     </declare-styleable>
     <declare-styleable name="WaveProgress">
-        <attr name="speed" format="dimension" />
-        <attr name="stroke" format="boolean" />
-        <attr name="line_width" format="dimension" />
-        <attr name="amplitude" format="dimension" />
+        <attr name="wave_progress_speed" format="dimension" />
+        <attr name="wave_progress_stroke" format="boolean" />
+        <attr name="wave_progress_line_width" format="dimension" />
+        <attr name="wave_progress_amplitude" format="dimension" />
+        <attr name="wave_progress_wave_color" format="color" />
     </declare-styleable>
 </resources>

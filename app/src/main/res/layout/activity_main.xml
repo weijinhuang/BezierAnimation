@@ -22,19 +22,19 @@
         android:id="@+id/wave1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#99ff5566"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        android:background="@color/colorPrimaryDark"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:speed="1dp"
-        app:stroke="false" />
+        app:stroke="true" />
 
 
     <com.hwj.bezieranimation.BezierWaveView
         android:id="@+id/wave2"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#22bb9966"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,10 +44,11 @@
         android:id="@+id/waveProgress"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:background="#64b4ff"
-        app:amplitude="40dp"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:speed="2dp" />
+        app:wave_progress_amplitude="40dp"
+        app:wave_progress_speed="2dp"
+        app:wave_progress_wave_color="@color/colorAccent" />
 
 
 </android.support.constraint.ConstraintLayout>

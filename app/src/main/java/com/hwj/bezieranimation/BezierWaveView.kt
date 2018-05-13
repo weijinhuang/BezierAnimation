@@ -21,18 +21,17 @@ class BezierWaveView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) 
 
     private var mBaseY = 0f
     private var mCtrX0 = 0f//第一个贝塞尔曲线的控制点X坐标
-    private var mCtrY0 = 0//第一个贝塞尔曲线的控制点Y坐标
+    private var mCtrY0 = 0//第一个贝塞尔曲线的控制点Y坐标,这里要用Int类型，因为kotlin里float不能进行xor运算
     private var mCtrX1 = 0f//第二个贝塞尔曲线的控制点X坐标
-    private var mCtrY1 = 0//第二个贝塞尔曲线的控制点Y坐标
+    private var mCtrY1 = 0//第二个贝塞尔曲线的控制点Y坐标，这里要用Int类型，因为kotlin里float不能进行xor运算
     private var mCtrX2 = 0f//第三个贝塞尔曲线的控制点X坐标
-
     //第一个贝塞尔曲线起始点和终止点
     private var mStartX0 = 0f
     private var mEndX0 = 0f
-    //第二个贝塞尔曲线起始点和终止点
-    private var mStartX1 = 0f
-    //第三个贝塞尔曲线起始点和终止点
-    private var mStartX2 = 0f
+    //第二个贝塞尔曲线终止点
+    private var mEndX1 = 0f
+    //第三个贝塞尔曲线终止点
+    private var mEndX2 = 0f
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -74,20 +73,16 @@ class BezierWaveView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) 
     }
 
     private fun initCoordnate() {
-        mBaseY = (measuredHeight / 2).toFloat()
-
-        mStartX0 = (measuredWidth / 2).toFloat()
-        mEndX0 = measuredWidth.toFloat()
-        mCtrX0 = (measuredWidth * 3 / 4).toFloat()
-
-        mStartX1 = 0f
-        mCtrX1 = (measuredWidth / 4).toFloat()
-
-        mStartX2 = (-measuredWidth / 2).toFloat()
-        mCtrX2 = (-measuredWidth / 4).toFloat()
+        mBaseY = (measuredHeight shr 1).toFloat()
+        mStartX0 = measuredWidth.toFloat()
+        mEndX0 = (measuredWidth shr 1).toFloat()
+        mCtrX0 = ((measuredWidth shr 2) * 3).toFloat()
+        mEndX1 = 0f
+        mCtrX1 = (measuredWidth shr 2).toFloat()
+        mEndX2 = -(measuredWidth shr 1).toFloat()
+        mCtrX2 = -(measuredWidth shr 2).toFloat()
     }
 
-    private var mCount = 0
     override fun onDraw(canvas: Canvas?) {
         mPath.reset()
         //绘制第一个贝塞尔曲线
@@ -100,32 +95,31 @@ class BezierWaveView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) 
         }
 
         //绘制第二个贝塞尔曲线
-        mPath.moveTo(mStartX1, mBaseY)
-        mPath.quadTo(mCtrX1, mCtrY1.toFloat(), mStartX0, mBaseY)
+        mPath.moveTo(mEndX0, mBaseY)
+        mPath.quadTo(mCtrX1, mCtrY1.toFloat(), mEndX1, mBaseY)
         if (!mStroke) {
-            mPath.lineTo(mStartX0, height.toFloat())
-            mPath.lineTo(mStartX1, height.toFloat())
+            mPath.lineTo(mEndX1, height.toFloat())
+            mPath.lineTo(mEndX0, height.toFloat())
             mPath.close()
         }
         //绘制第三个贝塞尔曲线
-        mPath.moveTo(mStartX2, mBaseY)
-        mPath.quadTo(mCtrX2, mCtrY0.toFloat(), mStartX1, mBaseY)
+        mPath.moveTo(mEndX1, mBaseY)
+        mPath.quadTo(mCtrX2, mCtrY0.toFloat(), mEndX2, mBaseY)
         if (!mStroke) {
-            mPath.lineTo(mStartX1, height.toFloat())
-            mPath.lineTo(mStartX2, height.toFloat())
+            mPath.lineTo(mEndX2, height.toFloat())
+            mPath.lineTo(mEndX1, height.toFloat())
             mPath.close()
         }
-
         canvas?.drawPath(mPath, mPaint)
         mStartX0 += mSpeed
         mEndX0 += mSpeed
         mCtrX0 += mSpeed
-        mStartX1 += mSpeed
+        mEndX1 += mSpeed
         mCtrX1 += mSpeed
-        mStartX2 += mSpeed
+        mEndX2 += mSpeed
         mCtrX2 += mSpeed
 
-        if (mStartX2 >= 0f) {
+        if (mEndX2 >= 0f) {
             initCoordnate()
             mCtrY0 = mCtrY0 xor mCtrY1
             mCtrY1 = mCtrY0 xor mCtrY1
